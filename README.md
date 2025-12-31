@@ -19,8 +19,8 @@ GABLE is a Google Apps Script framework for managing participants in longitudina
 
 1. Create a new Google Sheet
 2. Go to Extensions → Apps Script
-3. Copy all `.js` files into the project
-4. Update `config.js`
+3. Create a `.gs` file for each script and paste the contents of the corresponding project file into it (e.g., create `config.gs` and paste the contents of `config.js`)
+4. Update `config.gs`
 5. Run `initialize()`
 6. Confirm setup via email
 
@@ -461,7 +461,7 @@ Choose one of the following methods:
 - **Manual (recommended for testing)**:
   - Open the Google Sheet and navigate to the **Config** tab
   - Update the `TIME` value using ISO 8601 format (e.g., `2025-12-29T14:30:00.000Z`)
-  - Open the Apps Script editor and manually run the `sendAllStudyEmails` function in [Code.js](gable/Code.js)
+  - Open the Apps Script editor and manually run the `sendAllStudyEmails` function in [Code.gs](gable/Code.js)
 
 **3. Complete a Test Session**
 
@@ -481,7 +481,7 @@ This workflow allows you to test the full participant lifecycle, from signup thr
 
 ### Customization
 
-Edit in `config.js` and email templates:
+Edit in `config.js` (or `.gs` if already moved to Apps Script project) and email templates:
 
 - Session spacing
 - Group definitions
