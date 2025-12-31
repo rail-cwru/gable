@@ -38,7 +38,7 @@ const DAYS_INTERVAL_TEXT = "1-3 days";
 
 - `NUM_SESSIONS`: Total number of sessions in the longitudinal study. Used throughout the script for scheduling and study logic.
 
-- `NUM_GROUPS`: Number of experimental groups. Must match the number of entries in GROUPS_MAPPING, groupIndexMapping, and indexGroupMapping.
+- `NUM_GROUPS`: Number of experimental groups. Must match the number of entries in `GROUPS_MAPPING`, `groupIndexMapping`, and `indexGroupMapping`.
 
 - `DAYS_INTERVAL`: Default number of days between sessions. Each session’s daysBeforeNext is initialized with this value.
 
