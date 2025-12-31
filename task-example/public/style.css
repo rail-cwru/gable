@@ -1,0 +1,229 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    background-color: white;
+    cursor: pointer;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #653a91 100%);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.experiment-name {
+    text-align: center;
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.welcome-message {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+#username-display {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.status-message {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+}
+
+.status-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Debug Panel */
+#debug-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100vh;
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+#debug-panel h3 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #667eea;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+#debug-panel h3:first-child {
+    margin-top: 0;
+}
+
+#debug-panel pre {
+    background-color: #0d0d0d;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 1.4;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Experiment Page Styles */
+.hero-gradient {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Experiment Page Styles */
+.hero-gradient {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+

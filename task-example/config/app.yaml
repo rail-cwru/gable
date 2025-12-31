@@ -1,0 +1,6 @@
+# Application Configuration
+
+# Mock Date Settings
+# Set to true to use simulated time from mock-date.txt
+# Set to false to use real system time
+useMockDate: true

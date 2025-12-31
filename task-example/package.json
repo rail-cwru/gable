@@ -1,0 +1,21 @@
+{
+  "name": "mock-gable",
+  "version": "1.0.0",
+  "description": "Minimal login/logout app with Node.js and Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/storage-blob": "^12.17.0",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
+    "express-session": "^1.17.3",
+    "js-yaml": "^4.1.1"
+  }
+}

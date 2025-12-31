@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment</title>
+    <script src="mock-date.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPsych -->
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/jspsych@7.3.4"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #team {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 ml-[400px] m-0 p-0">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-microscope text-blue-600 text-2xl mr-2"></i>
+                        <span id="experiment-title" class="text-xl font-semibold text-gray-900"></span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+                    <span class="text-gray-600 text-sm">Welcome, <span id="username-display" class="font-medium text-blue-600"></span></span>
+                    <!-- <button id="flush-user-btn" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-all">
+                        Flush User
+                    </button> -->
+                    <button id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-all">
+                        Logout
+                    </button>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#home" class="bg-blue-50 text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#research" class="text-gray-600 hover:bg-gray-50 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Research</a>
+                <a href="#team" class="text-gray-600 hover:bg-gray-50 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Team</a>
+                <a href="#publications" class="text-gray-600 hover:bg-gray-50 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Publications</a>
+                <a href="#contact" class="text-gray-600 hover:bg-gray-50 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- jsPsych Experiment Container -->
+    <div id="jspsych-container" class="hidden min-h-screen flex items-center justify-center bg-gray-50"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 shadow-2xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
+            <p class="text-gray-700 font-semibold text-lg">Processing...</p>
+            <p class="text-gray-500 text-sm mt-2">Saving your progress</p>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Your current session is <span id="current-session-id"></span></h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Please begin when you are ready to focus.</p>
+                <button id="start-session-btn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md font-semibold transition-all">
+                    Start Session
+                </button>
+            </div>
+            
+            <div id="scrollable-container" class="overflow-x-auto" style="scroll-behavior: smooth;">
+                <div id="items-container" class="flex gap-6 pb-4"></div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <button id="end-session-btn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-md font-semibold transition-all hidden">
+                    Complete Session
+                </button>
+            </div>
+            
+            <p id="session-completed-message" class="text-lg text-green-600 font-semibold text-center mt-8 mx-auto hidden"></p>
+        </div>
+    </section>
+
+    <!-- Debug Panel - Left Sidebar -->
+    <aside id="contact" class="fixed left-0 top-0 h-full w-[400px] bg-gray-900 text-white flex flex-col py-8 px-6 z-40 shadow-lg overflow-hidden">
+        <!-- Experiment Config Section -->
+        <div class="flex-[0.5] flex flex-col mb-4 min-h-0">
+            <div class="mb-3 flex-shrink-0">
+                <h2 class="text-lg font-bold tracking-wider mb-2">EXPERIMENT CONFIG (TASK)</h2>
+                <div class="w-12 h-1 bg-blue-500"></div>
+            </div>
+            <pre id="experiment-config-display" class="flex-1 bg-black text-gray-300 p-3 rounded text-xs font-mono overflow-y-auto whitespace-pre-wrap break-words min-h-0">Loading...</pre>
+        </div>
+        
+        <!-- User Info Section -->
+        <div class="flex-[1] flex flex-col mb-4 min-h-0">
+            <div class="mb-3 flex-shrink-0">
+                <h2 class="text-lg font-bold tracking-wider mb-2">USER INFO (GABLE METADATA)</h2>
+                <div class="w-12 h-1 bg-blue-500"></div>
+            </div>
+            <pre id="user-info-display" class="flex-1 bg-black text-gray-300 p-3 rounded text-xs font-mono overflow-y-auto whitespace-pre-wrap break-words min-h-0">Loading...</pre>
+        </div>
+        
+        <!-- User Experiment Data Section -->
+        <div class="flex-[1] flex flex-col min-h-0">
+            <div class="mb-3 flex-shrink-0">
+                <h2 class="text-lg font-bold tracking-wider mb-2">USER EXPERIMENT DATA</h2>
+                <div class="w-12 h-1 bg-blue-500"></div>
+            </div>
+            <pre id="user-experiment-data-display" class="flex-1 bg-black text-gray-300 p-3 rounded text-xs font-mono overflow-y-auto whitespace-pre-wrap break-words min-h-0">No data yet...</pre>
+        </div>
+    </aside>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:justify-between">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center">
+                        <i class="fas fa-flask text-blue-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-semibold">Skills AI Research Group</span>
+                    </div>
+                    <p class="mt-4 text-sm max-w-xs">Investigating the mechanisms of human cognitive skill acquisition, adaptation, and performance when working alongside AI.</p>
+                </div>
+                
+                <!-- <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase tracking-wider">Research</h3>
+                        <ul class="mt-4 space-y-2">
+                            <li><a href="#" class="text-sm hover:text-white">Areas</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Projects</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Facilities</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Funding</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase tracking-wider">About</h3>
+                        <ul class="mt-4 space-y-2">
+                            <li><a href="#" class="text-sm hover:text-white">Our Lab</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">News</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Events</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Careers</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase tracking-wider">Legal</h3>
+                        <ul class="mt-4 space-y-2">
+                            <li><a href="#" class="text-sm hover:text-white">Privacy</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Terms</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Accessibility</a></li>
+                            <li><a href="#" class="text-sm hover:text-white">Cookies</a></li>
+                        </ul>
+                    </div>
+                </div> -->
+            </div>
+            
+            <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm">&copy; 2026 Ray AI Lab @ Case Western Reserve University. All rights reserved.</p>
+                <div class="mt-4 md:mt-0">
+                    <p class="text-sm">Part of the <a href="https://case.edu" class="text-blue-400 hover:text-blue-300">Case Western Reserve University</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script src="experiment.js"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+experimentName: "STROBE"
+description: "Stroop Task for Repeated Observation of Behavioral Effects"
+totalSessions: 4
+totalTrials: 5
+sessionCategories:
+  P1: [1, 2]
+  P2: [3, 4]
+sessionTimeLimits:
+  1: 10
+  2: 10
+  3: 10
+  4: 10
+sessionAnswers:
+  1:
+    1:
+      label: Red
+      value: Red
+      groups:
+        G0: null
+        G1: Red
+        G2: Red
+    2:
+      label: Gray
+      value: Gray
+      groups:
+        G0: null
+        G1: Gray
+        G2: Gray
+    3:
+      label: Pink
+      value: Pink
+      groups:
+        G0: null
+        G1: Pink
+        G2: Pink
+    4:
+      label: Black
+      value: Black
+      groups:
+        G0: null
+        G1: Black
+        G2: Black
+    5:
+      label: Green
+      value: Green
+      groups:
+        G0: null
+        G1: Green
+        G2: Green
+
+  2:
+    1:
+      label: Green
+      value: Purple
+      groups:
+        G0: null
+        G1: Purple
+        G2: Purple
+    2:
+      label: Gray
+      value: Yellow
+      groups:
+        G0: null
+        G1: Yellow
+        G2: Yellow
+    3:
+      label: Red
+      value: Purple
+      groups:
+        G0: null
+        G1: Green # deliberate error in G1
+        G2: Purple
+    4:
+      label: Yellow
+      value: Green
+      groups:
+        G0: null
+        G1: Green
+        G2: Green
+    5:
+      label: Pink
+      value: Gray
+      groups:
+        G0: null
+        G1: Gray
+        G2: Gray
+
+  3:
+    1:
+      label: Yellow
+      value: Pink
+      groups:
+        G0: null
+        G1: Pink
+        G2: Pink
+    2:
+      label: Gray
+      value: Red
+      groups:
+        G0: null
+        G1: Red
+        G2: Red
+    3:
+      label: Green
+      value: Yellow
+      groups:
+        G0: null
+        G1: Purple # deliberate error in G1
+        G2: Yellow
+    4:
+      label: Pink
+      value: Green
+      groups:
+        G0: null
+        G1: Green
+        G2: Green
+    5:
+      label: Red
+      value: Gray
+      groups:
+        G0: null
+        G1: Black # deliberate error in G1
+        G2: Gray
+
+  4:
+    1:
+      label: Brown
+      value: Orange
+      groups:
+        G0: null
+        G1: Orange
+        G2: Orange
+    2:
+      label: Purple
+      value: Brown
+      groups:
+        G0: null
+        G1: Gray # deliberate error in G1
+        G2: Brown
+    3:
+      label: Orange
+      value: Black
+      groups:
+        G0: null
+        G1: Black
+        G2: Black
+    4:
+      label: Green
+      value: Yellow
+      groups:
+        G0: null
+        G1: Yellow
+        G2: Yellow
+    5:
+      label: Yellow
+      value: Purple
+      groups:
+        G0: null
+        G1: Green # deliberate error in G1
+        G2: Purple

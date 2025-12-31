@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Mock Gable</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div style="text-align: center; margin-bottom: 10px;">
+                <a href="index.html" style="color: #667eea; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center;">
+                    <span style="margin-right: 5px;">←</span> Back to Home
+                </a>
+            </div>
+            <h1>Login</h1>
+            <p class="experiment-name" id="experiment-display"></p>
+
+            <!-- Login Form -->
+            <div id="login-section">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" id="use-default-btn" class="btn btn-secondary" style="margin-top: 10px;">Use Default Login</button>
+                </form>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="status-message" class="status-message"></div>
+        </div>
+    </div>
+
+    <script src="mock-date.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>
+
