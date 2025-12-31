@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# User data and experiment files
+task-example/users/
+*.json
+!package.json
+!tsconfig.json
+
+# Azure configuration (sensitive)
+task-example/config/azure.yaml
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Environment variables
+.env
+.env.local
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+trash/
