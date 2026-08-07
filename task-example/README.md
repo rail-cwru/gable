@@ -2,6 +2,15 @@
 
 A web-based experimental platform for running behavioral experiments with session and trial management.
 
+> Note: This example uses a Node server and Azure Blob Storage to replicate the
+> task and storage setup from our study. These are not requirements of GABLE.
+> GABLE only needs the task to read and write the participant state file to a
+> storage location it can reach, so any writable store (including free options)
+> can be used, and the task can be hosted with whatever tool the researcher
+> prefers.
+
+## Overview
+
 ## Overview
 
 This application implements the STROBE (Stroop Task for Repeated Observation of Behavioral Effects) experiment with:
