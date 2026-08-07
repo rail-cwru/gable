@@ -459,6 +459,29 @@ and remaining gift-card stock. On a schedule, GABLE compiles these counts into
 a status-summary email sent to the addresses listed in `updateeEmails`. The
 logic for tracking and reporting is implemented in `Updates.js`.
 
+## Administrative API
+
+For advanced or batch operations, GABLE can be deployed as an Apps Script web
+app that exposes a `doGet` endpoint. In the Apps Script editor, choose
+Deploy → New deployment → Web app, and use the resulting `/exec` URL as
+`APPS_SCRIPT_URL`. Each request names a `functionName` and its parameters, so a
+single authenticated call can run an administrative action such as
+`reactivateUser`, `rescheduleUser`, `renameUserId`, `runClean`,
+`sendAllStudyEmails`, or `updateConfigTime`.
+
+Requests are authenticated with a Google account that has access to the study,
+using standard Google OAuth. A minimal call looks like:
+
+    # `session` is an authenticated Google session for an account with study access
+    params = {
+        "functionName": "reactivateUser",
+        "participantId": "p123",
+        "timestamp": "2026-01-15T10:00:00.000Z",
+    }
+    response = session.get(APPS_SCRIPT_URL, params=params)
+    response.raise_for_status()
+    print(response.text)
+
 ## Testing and Customization
 
 ### Testing
