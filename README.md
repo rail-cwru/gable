@@ -449,6 +449,16 @@ GABLE produces two kinds of records that let you monitor a running study:
 - **Execution logs.** During every run, GABLE emits leveled status messages (`INFO`, `WARNING`, `ERROR`, etc.) through the built-in `Logger`. These appear in the **Executions** panel of the Apps Script editor (open the Apps Script project, then select **Executions** in the left sidebar), where each scheduled or triggered run is listed with its function name, status, timestamp, and log output. No additional setup is required; logging is part of the standard Apps Script project.
 - **Activity records.** Participant progress is written to the linked Google Sheet in real time.
 
+## Updates and Status Reporting
+
+GABLE tracks operational statistics through its Updates channel. A dedicated
+`[studyName]Updates` tab accumulates daily counts of key events, including
+sign-ups, session and study completions, gift cards issued, server errors,
+missed and invalidated sessions, reminder emails sent, grace periods granted,
+and remaining gift-card stock. On a schedule, GABLE compiles these counts into
+a status-summary email sent to the addresses listed in `updateeEmails`. The
+logic for tracking and reporting is implemented in `Updates.js`.
+
 ## Testing and Customization
 
 ### Testing
