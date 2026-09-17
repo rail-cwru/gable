@@ -602,6 +602,6 @@ If you use GABLE in published work, please cite the following manuscript:
 
 ## License
 
-This project is released under a noncommercial license. Commercial use is
-prohibited without prior written permission from the author.
-Please see the LICENSE file for more details.
+GABLE is available under the [PolyForm Noncommercial License 1.0.0](LICENSE). This source-available license permits the noncommercial uses described in its terms; it is not an OSI-approved open-source license.
+
+Commercial use requires a separate written license. See [Commercial Licensing](COMMERCIAL-LICENSE.md) for inquiry instructions.
