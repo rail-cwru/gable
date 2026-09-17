@@ -1,4 +1,4 @@
-# GABLE: Google Apps Script Longitudinal Participant Management
+# GABLE: Lightweight Infrastructure for Longitudinal Experiments Using Google Apps Script
 
 GABLE is a Google Apps Script framework for managing participants in longitudinal online experiments. It automates scheduling, reminders, session tracking, and incentive workflows so researchers can focus on building their experimental task.
 
