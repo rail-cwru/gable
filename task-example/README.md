@@ -64,6 +64,10 @@ To integrate with GABLE, please ensure you follow the steps outlined in the [mai
 
 ## Configuration
 
+The YAML files in this directory configure only the Node and jsPsych task example. They are separate from [`gable/config.js`](../gable/config.js), which is copied into Google Apps Script as `config.gs` and configures GABLE's participant management, scheduling, and notifications.
+
+When using Azure, configure `config/azure.yaml` for the task server and configure the storage settings in `config.gs` for GABLE. Both components should point to the same storage container so they can read and update the same participant-state files.
+
 - `config/strobe.yaml` - Experiment parameters
 - `config/azure.yaml` - Azure Blob Storage settings
 - `config/app.yaml` - Application settings

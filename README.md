@@ -13,20 +13,66 @@ GABLE is a Google Apps Script framework for managing participants in longitudina
 - Reads participant progress from your chosen storage backend
 - Supports automated gift card tracking and payouts
 
-## Quick Start
+## End-to-End Quick Start
 
-### Google Apps Script Setup
+GABLE connects three components: a Google Sheet and Apps Script project for participant management, an external storage service for participant state, and your experimental task. Researchers are responsible for configuring all three components.
 
-1. Create a new Google Sheet
-2. Go to Extensions → Apps Script
-3. Create a `.gs` file for each script and paste the contents of the corresponding project file into it (e.g., create `config.gs` and paste the contents of `config.js`)
-4. Update `config.gs`
-5. Run `initialize()`
-6. Confirm setup via email
+### 1. Set Up Google Sheets and Apps Script
 
-### Detailed Configuration Guide
+1. Create a new Google Sheet.
+2. Open **Extensions > Apps Script**.
+3. Add the required core scripts and your chosen storage adapter from the [`gable`](gable) directory, changing each `.js` extension to `.gs`. Optional administrative scripts do not need to be copied.
+4. Before initialization, review:
+   - `config.gs`: Study, scheduling, calendar, incentive, and storage settings.
+   - `main.gs`: Registration-form questions and instructions.
+   - `docinit.gs`: Participant email templates.
+   - `Code.gs`: Institutional email-domain and timezone assumptions.
 
-#### Global Study Parameters
+See the [`gable` file guide](gable/README.md) for the complete file list and the [Detailed Configuration Guide](#detailed-configuration-guide) for study settings.
+
+### 2. Choose and Configure Participant-State Storage
+
+Choose a storage service that both GABLE and your experimental task can access. GABLE includes an Azure Blob Storage implementation, but you can replace it with AWS S3, Google Cloud Storage, Firebase, or another service.
+
+Configure the storage credentials in `config.gs`. If you are not using Azure, adapt the storage functions in `gable/azure.js` while preserving their existing function signatures.
+
+See [Choose a Storage Provider](#choose-a-storage-provider). For a working Azure example, see the [task example's Azure setup guide](task-example/AZURE_SETUP.md).
+
+### 3. Initialize and Verify GABLE
+
+Run `initialize()` from the Apps Script editor and approve the requested Google permissions. Initialization:
+
+- Creates the Google Doc containing participant email templates.
+- Creates the participant-registration Google Form.
+- Creates the study, updates, gift-card, and configuration sheets.
+- Creates triggers for registration, storage polling, participant emails, and status updates.
+- Sends a setup-confirmation email to the administrator address configured in `config.gs`.
+
+The confirmation email indicates that the initial resources were created; it does not test the participant workflow. Run `initialize()` only for initial setup, because rerunning it can create duplicate resources or triggers.
+
+### 4. Integrate the Experimental Task
+
+Configure your task to update each participant's JSON state file as sessions and trials progress. This integration is the researcher's responsibility; GABLE reads this file to determine participant progress and schedule notifications.
+
+See [Integration with Your Task Webpage](#integration-with-your-task-webpage) for the required fields and file structure. A concrete jsPsych and Node example is available in [`task-example`](task-example).
+
+### 5. Test the Complete Workflow
+
+Before recruiting participants:
+
+1. Submit the generated registration form using your own email address.
+2. Confirm that the participant appears in the Google Sheet.
+3. Confirm that the initial participant-state file is created in storage.
+4. Complete a test session in the task.
+5. Confirm that the task updates the state file and GABLE detects the change.
+
+See [Testing](#testing) for more testing guidance.
+
+## Detailed Configuration Guide
+
+This section describes the study settings in [`gable/config.js`](gable/config.js). When creating the Apps Script project, copy this file as `config.gs`.
+
+### Global Study Parameters
 
 ```js
 const NUM_SESSIONS = 10;
@@ -45,7 +91,7 @@ const DAYS_INTERVAL_TEXT = "1-3 days";
 - `DAYS_INTERVAL_TEXT`: Human readable description of the intended return window, used in communication to participants.
 
 
-#### Group Definitions
+### Group Definitions
 
 ```js
 const GROUPS_MAPPING = {
@@ -70,7 +116,7 @@ const indexGroupMapping = { /* groupId → index */ }
 
 The assertions at the bottom ensure that `NUM_GROUPS` matches all three mappings. If you add or remove a group, update these mappings and `NUM_GROUPS` together.
 
-#### `STUDIES` Object
+### `STUDIES` Object
 
 Currently the script assumes exactly one active study:
 
@@ -114,7 +160,7 @@ URL of your experimental task.
 
 - `adminCalendarId`: Google Calendar ID where participant sessions are scheduled.
 
-##### Group and Incentive Settings
+#### Group and Incentive Settings
 
 ```javascript
 groups: {
@@ -132,7 +178,7 @@ halfSessionNumber: Math.floor(NUM_SESSIONS/2),
 
 - `halfSessionNumber`: Automatically computed midpoint session, used for logic that depends on “first half” vs “second half”.
 
-##### Late Session Grace Period
+#### Late Session Grace Period
 
 ```javascript
 lateSessionGraceDays: {
@@ -149,7 +195,7 @@ lateSessionGraceDays: {
 - `graceDaysNumber`: Number of extra days given if a participant misses the scheduled time.
 
 
-##### Study Data Structure
+#### Study Data Structure
 ```js
 studyData: Array.from({ length: NUM_SESSIONS }, (_, i) => ({
   sessionName: (i + 1).toString(),
@@ -175,7 +221,7 @@ studyData: [
 ```
 
 
-##### Invalidation Rules
+#### Invalidation Rules
 
 
 ```js
@@ -185,7 +231,7 @@ numberOfHoursToInvalidateIncompleteSession: 2,
 
 Controls how quickly an incomplete session becomes invalid. These are used to define timeouts after a participant starts but does not finish a session.
 
-##### Sign-up Valid Time Ranges
+#### Sign-up Valid Time Ranges
 
 ```js
 experimentValidTimeRange: [8, 22]
@@ -194,7 +240,7 @@ experimentValidTimeRange: [8, 22]
 If a user selects a time outside the valid range, it is automatically adjusted to the nearest allowable time. All times are interpreted in 24-hour format.
 
 
-##### Status Storage
+#### Status Storage
 
 ```js
 collecting: true,
@@ -207,9 +253,15 @@ storageContainer: "xxxx",
 
 - `sasToken`, `storageAccountName`, `storageContainer`: Azure storage related fields that establish connection for your storage backend. Fill these in with your own credentials (or adapt to your own storage solution).
 
-GABLE only requires the ability to read and write JSON.
+### Session Status Color Values
 
-GABLE currently ships with an `Azure.gs` file that implements all communication with Azure Blob Storage using SAS tokens. If you want to use a different storage provider (for example AWS S3, GCP Storage, Firebase), you only need to replace the implementation of the storage access functions in `Azure.gs` while keeping their function signatures the same.
+The session-status color constants are also defined at the bottom of `gable/config.js`. See [Session Status Colors](#session-status-colors) for their meanings and lifecycle transitions.
+
+## Choose a Storage Provider
+
+GABLE only requires the ability to read and write JSON. The included storage implementation is in [`gable/azure.js`](gable/azure.js), which communicates with Azure Blob Storage using SAS tokens. When creating the Apps Script project, copy this source file as `azure.gs`.
+
+If you want to use a different storage provider (for example AWS S3, GCP Storage, Firebase), replace the implementation of the storage access functions while keeping their function signatures the same.
 
 
 Specifically, you should update:
@@ -308,6 +360,8 @@ pID{userId}_gable.json
 
 ## Session Status Colors
 
+Session-status color values are defined in [`gable/config.js`](gable/config.js). Most lifecycle transitions are applied in [`gable/Code.js`](gable/Code.js), with participant-state and administrative updates also handled in [`gable/azure.js`](gable/azure.js) and [`gable/python_api.js`](gable/python_api.js).
+
 GABLE uses color codes to track participant session states. Each color represents a specific stage in the session lifecycle:
 
 - $${\color{black}WHITE}$$: Next session date calculated but session notification email not yet sent to participant.
@@ -320,7 +374,7 @@ GABLE uses color codes to track participant session states. Each color represent
 - $${\color{purple}PURPLE}$$: Grace period previously granted with 1 day remaining before grace period expires.
 - $${\color{red}RED}$$: Participant invalidated due to session not completed on time. Invalidation email and gift cards sent.
 
-#### 1. Successfully completed session on time:
+### 1. Successfully Completed Session on Time
 
 ```mermaid
 graph LR;
@@ -334,7 +388,7 @@ graph LR;
     style D fill:#034AEA,color:#fff,stroke:#333;
 ```
 
-#### 2. Successfully completed but reminder email sent:
+### 2. Successfully Completed but Reminder Email Sent
 
 ```mermaid
 graph LR;
@@ -350,7 +404,7 @@ graph LR;
     style E fill:#034AEA,color:#fff,stroke:#333;
 ```
 
-#### 3. Session not completed with reminder email:
+### 3. Session Not Completed After Reminder Email
 
 ```mermaid
 graph LR;
@@ -364,7 +418,7 @@ graph LR;
     style D fill:#FF0000,color:#fff,stroke:#333;
 ```
 
-#### 4. Successfully completed after incomplete session:
+### 4. Successfully Completed After an Incomplete Session
 
 ```mermaid
 graph LR;
@@ -380,7 +434,7 @@ graph LR;
     style E fill:#034AEA,color:#fff,stroke:#333;
 ```
 
-#### 5. Session not completed after incomplete session:
+### 5. Session Not Completed After an Incomplete Session
 
 ```mermaid
 graph LR;
@@ -394,7 +448,9 @@ graph LR;
     style D fill:#FF0000,color:#fff,stroke:#333;
 ```
 
-#### 6. After the configured session number (e.g., session 15), the study is marked complete once the grace-period reminder has been sent.
+### 6. Completed During the Grace Period
+
+After the configured session number (for example, session 15), the study is marked complete when the participant finishes after receiving a grace-period reminder.
 
 ```mermaid
 graph LR;
@@ -414,7 +470,9 @@ graph LR;
     style G fill:#034AEA,color:#fff,stroke:#333;
 ```
 
-#### 7. After the configured session number (e.g., 15), the study is considered not completed if the participant fails to finish after the grace-period reminder.
+### 7. Not Completed During the Grace Period
+
+After the configured session number (for example, session 15), the study is not completed if the participant fails to finish after receiving a grace-period reminder.
 
 ```mermaid
 graph LR;
@@ -434,6 +492,8 @@ graph LR;
 
 ## Time Based Triggers
 
+Trigger creation is implemented in [`gable/main.js`](gable/main.js), where `initialize()` calls `createTriggers()`.
+
 Initialization creates triggers that:
 
 - Activate sessions
@@ -444,22 +504,27 @@ Initialization creates triggers that:
 
 ## Logs and Monitoring
 
+Logging is implemented by GABLE's custom `Logger` class in [`gable/Logger.js`](gable/Logger.js), copied into Apps Script as `Logger.gs`.
+
 GABLE produces two kinds of records that let you monitor a running study:
 
-- **Execution logs.** During every run, GABLE emits leveled status messages (`INFO`, `WARNING`, `ERROR`, etc.) through the built-in `Logger`. These appear in the **Executions** panel of the Apps Script editor (open the Apps Script project, then select **Executions** in the left sidebar), where each scheduled or triggered run is listed with its function name, status, timestamp, and log output. No additional setup is required; logging is part of the standard Apps Script project.
+- **Execution logs.** During every run, GABLE emits leveled status messages (`INFO`, `WARNING`, `ERROR`, etc.) through this logger. These appear in the **Executions** panel of the Apps Script editor (open the Apps Script project, then select **Executions** in the left sidebar), where each scheduled or triggered run is listed with its function name, status, timestamp, and log output. No additional setup is required.
 - **Activity records.** Participant progress is written to the linked Google Sheet in real time.
 
 ## Updates and Status Reporting
+
+Status aggregation and summary emails are implemented in [`gable/Updates.js`](gable/Updates.js), copied into Apps Script as `Updates.gs`.
 
 GABLE tracks operational statistics through its Updates channel. A dedicated
 `[studyName]Updates` tab accumulates daily counts of key events, including
 sign-ups, session and study completions, gift cards issued, server errors,
 missed and invalidated sessions, reminder emails sent, grace periods granted,
 and remaining gift-card stock. On a schedule, GABLE compiles these counts into
-a status-summary email sent to the addresses listed in `updateeEmails`. The
-logic for tracking and reporting is implemented in `Updates.js`.
+a status-summary email sent to the addresses listed in `updateeEmails`.
 
 ## Administrative API
+
+The administrative endpoint is implemented in [`gable/python_api.js`](gable/python_api.js), copied into Apps Script as `python_api.gs`.
 
 For advanced or batch operations, GABLE can be deployed as an Apps Script web
 app that exposes a `doGet` endpoint. In the Apps Script editor, choose
